@@ -1,0 +1,14 @@
+{spawn, exec} = require 'child_process'
+util = require 'util'
+
+runCommand = (name, args...) ->
+    proc =           spawn name, args
+    proc.stderr.on   'data', (buffer) -> console.log buffer.toString()
+    proc.stdout.on   'data', (buffer) -> console.log buffer.toString()
+    proc.on          'exit', (status) -> process.exit(1) if status isnt 0
+
+task 'watch', 'Watch source files and build JS & CSS', (options) ->
+  runCommand 'coffee', '--output', '../static/app', '-wc', 'app'
+
+task 'build', 'Watch source files and build JS & CSS', (options) ->
+  runCommand 'coffee', '--output', '../static/app', '-c', 'app'
